@@ -1,11 +1,3 @@
-//
-//  functions.h
-//  philippine-crossword-v2
-//
-//  Created by Посудин Константин Михайлович on 21.12.17.
-//  Copyright © 2017 tin. All rights reserved.
-//
-
 #ifndef functions_h
 #define functions_h
 #include <iostream>

@@ -1,11 +1,3 @@
-//
-//  globals.h
-//  philippine-crossword-v2
-//
-//  Created by Посудин Константин Михайлович on 21.12.17.
-//  Copyright © 2017 tin. All rights reserved.
-//
-
 #ifndef globals_h
 #define globals_h
 #include <iostream>
