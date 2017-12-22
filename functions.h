@@ -10,7 +10,7 @@
 using namespace std;
 void placemark(const pair <int, int>& to) {
     marked[curmarked++] = to;
-    mark[to.first][to.second] = true;
+    mark[to.first][to.second] = true; //Placing mark, increasing version
 }
 
 void placemark(int x, int y) {
@@ -20,11 +20,13 @@ void placemark(int x, int y) {
 void rollback(int version) {
     while (curmarked > version) {
         --curmarked;
-        mark[marked[curmarked].first][marked[curmarked].second] = 0;
+        mark[marked[curmarked].first][marked[curmarked].second] = 0; //deleting mark in the cell untill we didnt downgrade to the needed version
     }
 }
 
 bool ismarked(int x, int y) {
+    //is cell marked
+    //cell is market if there's a number in it (except the beginnig or the end of the way) or its a part of the way.
     if (x < 0 || x >= n)
         return true;
     if (y < 0 || y >= m)
@@ -50,32 +52,32 @@ void iterate();
 
 void recursive(int curx, int cury, const pair <int, int>& dest, int distleft) {
     if (mindist({ curx, cury }, dest) > distleft) {
-        //if I don't do this, this will be a disaster
+        //A useful cut not to consider a useless ways many times
         return;
     }
     placemark(curx, cury);
     int ver = curmarked;
     if (distleft == 0) {
         if (curx == dest.first && cury == dest.second) {
-            iterate();
+            iterate(); //If we made a way (s-t), we're trying to build the whole board.
         }
-        rollback(ver);
+        rollback(ver); //If we didn't, we got to clean everything and finish
         return;
     }
     for (int dir = 0; dir < DIR; ++dir) {
         int x = curx + dx[dir];
         int y = cury + dy[dir];
         if (!ismarked(x, y) || pair<int, int>(x, y) == dest) {
-            recursive(x, y, dest, distleft - 1);
-            rollback(ver);
+            recursive(x, y, dest, distleft - 1); //going to a random way, searching the rest of the way
+            rollback(ver); //if none of the ends of the way is working, rolling back.
         }
     }
 }
 
 void match(const pair <int, int>& s, const pair <int, int>& t) {
-    int ver = curmarked;
-    recursive(s.first, s.second, t, value[s.first][s.second] - 1);
-    rollback(ver);
+    int ver = curmarked; //remembering the current state of the board
+    recursive(s.first, s.second, t, value[s.first][s.second] - 1); //Recursively we sort out all possible ways
+    rollback(ver); //If we can not complete any way to the full board, then we roll back the version back
 }
 
 void printfield() {
@@ -95,6 +97,7 @@ void iterate() {
         exit(0);
     }
     for (int value = 2; value <= TOTAL; ++value) {
+        //searching the cells that would be the easiest to find a couple to
         vector <pair <int, int> > things;
         things.reserve(s[value].size());
         for (const auto& x : s[value]) {
@@ -113,14 +116,16 @@ void iterate() {
                 }
             }
             if (cnt == 0) {
+                //if there're no potential couple then we can not build a pair
                 return;
             }
             if (cnt == 1) {
                 s[value].erase(things[i]);
                 s[value].erase(things[pos]);
-                //cerr << "Optimized\n";
-                //printfield();
+                
+                //making a couples and trying to build the way. if we can not we're returning them back to the set end trying again because we can't build it to the end
                 match(things[i], things[pos]);
+                
                 s[value].insert(things[i]);
                 s[value].insert(things[pos]);
                 return;
@@ -134,21 +139,21 @@ void iterate() {
         things.push_back(x);
     }
     int len = things.size();
-    for (int i = 0; i < 1; ++i) {
+    { int const i = 0;
         for (int j = i + 1; j < len; ++j) {
             int temp = mindist(things[i], things[j]);
             if (temp < value && temp % 2 != value % 2) {
                 s[value].erase(things[i]);
                 s[value].erase(things[j]);
-                //cerr << "NonOptimized\n";
+                
                 match(things[i], things[j]);
+                
                 s[value].insert(things[i]);
                 s[value].insert(things[j]);
             }
         }
     }
 }
-
 
 
 #endif /* functions_h */
