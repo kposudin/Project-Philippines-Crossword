@@ -10,7 +10,7 @@
 using namespace std;
 
 
-const int CAP = 50;
+const int CAP = 100;
 const int TOTAL = CAP * CAP + 1;
 
 const int DIR = 4;
