@@ -67,7 +67,7 @@ void recursive(int curx, int cury, const pair <int, int>& dest, int distleft) {
     for (int dir = 0; dir < DIR; ++dir) {
         int x = curx + dx[dir];
         int y = cury + dy[dir];
-        if (!ismarked(x, y) || pair<int, int>(x, y) == dest) {
+        if (!ismarked(x, y) || (pair<int, int>(x, y) == dest && distleft == 1)) {
             recursive(x, y, dest, distleft - 1); //going to a random way, searching the rest of the way
             rollback(ver); //if none of the ends of the way is working, rolling back.
         }
