@@ -327,7 +327,4 @@ Solvable
 
 * **Посудин Константин** 
 
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
 
